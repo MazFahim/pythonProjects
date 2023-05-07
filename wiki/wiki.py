@@ -5,12 +5,12 @@ import webbrowser
 import csv
 
 
-def write(title_, summary):
+def write(title_, categories, watched):
     with open('wiki.csv', 'w', newline='') as f:
         fieldnames = ['Title', 'Category']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({'Title': title_, 'Summary': summary})
+        writer.writerow({'Title': title_, 'Categories': categories})
         f.close()
 
 
@@ -39,14 +39,17 @@ while True:
         c = c + 1
 
     while True:
+        watched = [0,0,0,0,0]
         choice = int(input("\n\nEnter your choice(0 to break, 6 to refresh):"))
         if choice == 0:
+            #write(titles, categories, watched)
             print("You have terminated the code...")
             exit()
         elif choice == 6:
+            #write(titles, categories, watched)
             print('Refreshing search result:')
             break
         else:
-            #write(titles[choice-1], summaries[choice-1])
+            watched[choice-1] = 1
             url = 'https://en.wikipedia.org/wiki/%s' % titles[choice - 1]
             webbrowser.open(url)
