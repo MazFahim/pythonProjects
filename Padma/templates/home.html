@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js"></script>
+
+<title>Home</title>
+<style>
+  body, nav {
+    margin: 0;
+    padding: 0;
+  }
+  #content{
+    text-align: center;
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  #content input[type="text"]{
+    width: 30%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 2px solid #4CAF50;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  #content input[type="text"]:focus {
+    border-color: #870303;
+    outline: none;
+  }
+</style>
+<body>
+  {% include '_navbar.html' %}  
+
+  <div id="content">
+    <div class="column1">
+      <div id="calender"></div>
+    </div>
+    <div class="column2">
+      <div ng-app="">
+        <p>Add New Task: <input type="text" id="taskInput" oninput="displayTask()"></p>
+        <h1 id="displayTask"></h1>
+      </div>
+    </div>   
+    
+  </div>
+
+</body>
+<script>
+  function displayTask() {
+    const input = document.getElementById("taskInput").value;
+    document.getElementById("displayTask").innerText = input;
+  }
+</script>
+</html>
