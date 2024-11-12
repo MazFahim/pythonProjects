@@ -49,20 +49,40 @@
                     <div><strong>Wish Name</strong></div>
                     <div><strong>Priority</strong></div>
                     <div><strong>Price Tag</strong></div>
-                    <div><strong>Accumulated</strong></div>                    
+                    <div><strong>Accumulated</strong></div>       
+                    
+                    <!-- {% for row in data %}
+                        {% for item in row %}
+                            <div>{{ item }}</div>
+                        {% endfor %}
+                    {% endfor %} -->
                 </div>
             </div>
             <div class="column">
                 <h2>Monthly</h2>
+                <div id="monthly" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div><strong>Expense name</strong></div>
+                    <div><strong>Budget</strong></div>
+                    <div><strong>Spent</strong></div>
+                </div>
             </div>
         </div>
         <div class="column">
             <h2>Daily</h2>
+            <div id="daily" style="display: grid; grid-template-rows: repeat(2, 1fr); gap: 10px;">
+                <div><strong>Budget</strong></div>
+                <div><strong>Expense</strong></div>
+            </div>
         </div>
     </div>
 
     <div>
         <h2>Balance Statements</h2>
+        <div id="balanceStatements" style="display: grid; grid-template-rows: repeat(3, 1fr); gap: 10px;">
+            <div><strong>DBBL</strong></div>
+            <div><strong>Bkash</strong></div>
+            <div><strong>Nagad</strong></div>
+        </div>
     </div>
 </body>
 </html>
