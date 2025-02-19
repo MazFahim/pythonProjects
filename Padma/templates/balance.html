@@ -70,8 +70,20 @@
         <div class="column">
             <h2>Daily</h2>
             <div id="daily" style="display: grid; grid-template-rows: repeat(2, 1fr); gap: 10px;">
-                <div><strong>Budget</strong></div>
-                <div><strong>Expense</strong></div>
+                <div>
+                    <strong>Budget</strong>
+                    <input type="number" name="dailyBudget" id="dailyBudget" value="{{ dailyData.budget }}"
+                    onchange="updateDaily('budget', this.value)">
+                </div>
+                <div>
+                    <strong>Expense</strong>
+                    <input type="number" name="dailyExpense" id="dailyExpense" value="{{ dailyData.expense }}"
+                    onchange="updateDaily('expense', this.value)">
+                </div>
+                <div>
+                    <strong>Balance</strong>
+                    <span id="dailyBalance">{{ dailyData.balance }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -85,4 +97,24 @@
         </div>
     </div>
 </body>
+<script>
+    function updateDaily(field, value){
+        fetch('/updateDaily', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                field: field,
+                value: value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success){
+                document.getElementById('dailyBalance').innerText = data.balance
+            }
+        })
+    }
+</script>
 </html>
