@@ -15,10 +15,13 @@ def balance():
 @app.route('/update_daily', methods=['POST'])
 def update_daily():
     data = request.json
-    field, value = data.get("field"), data.get("value")
+    # field, value = data.get("field"), data.get("value")
+    field, value = data["field"], int(data["value"])
+
     update_daily_balance(field, value)
     updated_data = get_daily_balances()
-    return jsonify({"success": True, "balance": updated_data["balance"]})
+    return jsonify({"success": True, "balance": updated_data["balance"],
+                    "saved": updated_data["saved"], "date": updated_data["date"]})
 
 if __name__ == '__main__':
     app.run(debug=True)
