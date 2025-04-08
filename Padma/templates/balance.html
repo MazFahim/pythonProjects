@@ -88,10 +88,42 @@
 
         <div class="column">
             <h2>Monthly</h2>
-            <div id="monthly" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                <div><strong>Expense name</strong></div>
-                <div><strong>Budget</strong></div>
-                <div><strong>Spent</strong></div>
+            <div id="monthly">
+                <div>
+                    <strong>Month:</strong>
+                    <span id="monthlyMonth">{{ monthlyData.month }}</span>
+                </div>
+                <div  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div><strong>Expense name</strong></div>
+                    <div><strong>Budget</strong></div>
+                    <div><strong>Spent</strong></div>
+                </div>
+
+                {% set ns = namespace(totalBudget=0, totalSpent=0) %}
+
+                {% for expense in monthlyData.expenses %}
+                    {% set ns.totalBudget = ns.totalBudget + expense.budget %}
+                    {% set ns.totalSpent = ns.totalSpent + expense.spent %}
+                {% endfor %}
+
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div><strong>Total</strong></div>
+                    <div>{{ ns.totalBudget }}</div>
+                    <div>Remaining: {{ ns.totalBudget - ns.totalSpent }}</div>
+                </div>
+
+                {% for expense in monthlyData.expenses %}
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div>{{ expense.name }}</div>
+                    <div>
+                        <input type="number" value="{{ expense.budget }}" onchange="updateMonthlyExpense('{{ expense.name }}', 'budget', this.value)">
+                    </div>
+                    <div>
+                        <input type="number" value="{{ expense.spent }}" onchange="updateMonthlyExpense('{{ expense.name }}', 'spent', this.value)">
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -114,6 +146,26 @@
                 document.getElementById('dailyBalance').innerText = data.balance;
                 document.getElementById('dailySaved').innerText = data.saved;
                 document.getElementById('dailyDate').innerText = data.date;
+            }
+        })
+    }
+
+    function updateMonthlyExpense(name, field, value){
+        fetch('/updateMonthlyExpense', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                field: field,
+                value: value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success){
+                console.log("Monthly expense updated successfully.");
             }
         })
     }
