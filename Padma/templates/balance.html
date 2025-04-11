@@ -93,6 +93,12 @@
                     <strong>Month:</strong>
                     <span id="monthlyMonth">{{ monthlyData.month }}</span>
                 </div>
+
+                <div>
+                    <strong>Saved Last Month:</strong>
+                    <span id="monthlyMonth">{{ monthlyData.savedLastMonth }}</span>
+                </div>
+
                 <div  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                     <div><strong>Expense name</strong></div>
                     <div><strong>Budget</strong></div>
@@ -107,20 +113,24 @@
                 {% endfor %}
 
 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px;">
                     <div><strong>Total</strong></div>
                     <div>{{ ns.totalBudget }}</div>
                     <div>Remaining: {{ ns.totalBudget - ns.totalSpent }}</div>
                 </div>
 
                 {% for expense in monthlyData.expenses %}
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px;">
                     <div>{{ expense.name }}</div>
                     <div>
-                        <input type="number" value="{{ expense.budget }}" onchange="updateMonthlyExpense('{{ expense.name }}', 'budget', this.value)">
+                        <input type="number" value="{{ expense.budget }}" 
+                        onchange="updateMonthlyExpense('{{ expense.name }}', 'budget', this.value)"
+                        style="width: 130px; padding: 3px; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
                     <div>
-                        <input type="number" value="{{ expense.spent }}" onchange="updateMonthlyExpense('{{ expense.name }}', 'spent', this.value)">
+                        <input type="number" value="{{ expense.spent }}" 
+                        onchange="updateMonthlyExpense('{{ expense.name }}', 'spent', this.value)"
+                        style="width: 130px; padding: 3px; border: 1px solid #ccc; border-radius: 4px;">
                     </div>
                 </div>
                 {% endfor %}
