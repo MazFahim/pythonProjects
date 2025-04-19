@@ -69,3 +69,50 @@ def update_monthly_expense(expense_name, field, value):
         {"type": "monthly", "expenses.name": expense_name},
         {"$set": {f"expenses.$.{field}": value}}
     )
+
+
+def add_wish_item(name):
+    wish_data = collection.find_one({"type": "wish_list"})
+    new_wish = {
+        "name": name,
+        "priority": "",
+        "price_tag": 0,	
+        "accumulated": 0
+    }
+
+    if not wish_data:
+        data = {
+            "type": "wish_list",
+            "wishes": [new_wish]
+        }
+        collection.insert_one(data)
+    else:
+        collection.update_one(
+            {"type": "wish_list"},
+            {"$push": {"wishes": new_wish}}
+        )
+
+
+def get_wish_list():
+    wish_data = collection.find_one({"type": "wish_list"}, {"_id": 0})
+    
+    if not wish_data:
+        wish_data = {
+            "type": "wish_list",
+            "wishes": []
+        }
+        collection.insert_one(wish_data)
+
+    return wish_data
+
+def update_wish(name, field, value):
+    collection.update_one(
+        {"type": "wish_list", "wishes.name": name},
+        {"$set": {f"wishes.$.{field}": value}}
+    )
+
+def delete_wish(name):
+    collection.update_one(
+        {"type": "wish_list"},
+        {"$pull": {"wishes": {"name": name}}}
+    )
