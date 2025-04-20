@@ -89,64 +89,6 @@
             </div>
         </div>
 
-        <!-- balances -->
-        <div class="column">
-            <h2>Balance Statements</h2>
-            <div id="balanceStatements" style="display: grid; grid-template-rows: repeat(3, 1fr); gap: 10px;">
-                <div><strong>DBBL</strong></div>
-                <div><strong>Bkash</strong></div>
-                <div><strong>Nagad</strong></div>
-            </div>
-        </div>
-
-        <!-- wishlist -->
-        <div class="column wishlist-container">
-            <h2>Wishlist</h2>
-
-            <!-- adding new wish -->
-            <div class="wish-row">
-                <input type="text" id="wishInput" placeholder="Let there be new wish" style="flex: 1;width: 350px;padding: 5px;margin-bottom: 10px;">
-                <button style="background-color: #4caf50; padding: 5px; border-radius: 3px; width: 100px; border-color: rgb(44, 42, 40);" onclick="addWish()">Add</button>
-            </div>
-
-            <div id="wishlist" class="wish-row wish-label" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
-                <div><strong>Wish Name</strong></div>
-                <div><strong>Priority</strong></div>
-                <div><strong>Price Tag</strong></div>
-                <div><strong>Accumulated</strong></div>       
-            </div>
-
-            <!-- Wishlist items -->
-            <div id="wishlistContainer" class="wish-row">
-                {% for wish in wishlistData.wishes %}
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 8px;">
-                    <div>{{ wish.name }}</div>
-                    <!-- <div>{{ wish.priority }}</div> -->
-                    
-                    <select onchange="updateWish('{{ wish.name }}', 'priority', this.value)">
-                        <option value="High" {{ 'selected' if wish.priority == 'High' else '' }}>High</option>
-                        <option value="Medium" {{ 'selected' if wish.priority == 'Medium' else '' }}>Medium</option>
-                        <option value="Low" {{ 'selected' if wish.priority == 'Low' else '' }}>Low</option>
-                    </select>
-                    
-                    <div>
-                        <input type="number" value="{{ wish.price }}" class="wish-input"
-                            onchange="updateWish('{{ wish.name }}', 'price', this.value)">
-                    </div>
-                
-                    <div>
-                        <input type="number" value="{{ wish.accumulated }}" class="wish-input"
-                            onchange="updateWish('{{ wish.name }}', 'accumulated', this.value)">
-                    </div>
-
-                    <div>
-                        <button class="delete-btn" onclick="deleteWish('{{ wish.name }}')">🗑️</button>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
         <!-- monthly -->
         <div class="column">
             <h2>Monthly</h2>
@@ -198,8 +140,100 @@
                 {% endfor %}
             </div>
         </div>
+        
+
+        <!-- wishlist -->
+        <div class="column wishlist-container">
+            <h2>Wishlist</h2>
+
+            <!-- adding new wish -->
+            <div class="wish-row">
+                <input type="text" id="wishInput" placeholder="Let there be a new wish" style="flex: 1;width: 350px;padding: 5px;margin-bottom: 10px;">
+                <button style="background-color: #4caf50; padding: 5px; border-radius: 3px; width: 100px; border-color: rgb(44, 42, 40);" onclick="addWish()">Add</button>
+            </div>
+
+            <div id="wishlist" class="wish-row wish-label" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                <div><strong>Wish Name</strong></div>
+                <div><strong>Priority</strong></div>
+                <div><strong>Price Tag</strong></div>
+                <div><strong>Accumulated</strong></div>       
+            </div>
+
+            <!-- Wishlist items -->
+            <div id="wishlistContainer" class="wish-row">
+                {% for wish in wishlistData.wishes %}
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 8px;">
+                    <div>{{ wish.name }}</div>
+                    <!-- <div>{{ wish.priority }}</div> -->
+                    
+                    <select onchange="updateWish('{{ wish.name }}', 'priority', this.value)">
+                        <option value="High" {{ 'selected' if wish.priority == 'High' else '' }}>High</option>
+                        <option value="Medium" {{ 'selected' if wish.priority == 'Medium' else '' }}>Medium</option>
+                        <option value="Low" {{ 'selected' if wish.priority == 'Low' else '' }}>Low</option>
+                    </select>
+                    
+                    <div>
+                        <input type="number" value="{{ wish.price }}" class="wish-input"
+                            onchange="updateWish('{{ wish.name }}', 'price', this.value)">
+                    </div>
+                
+                    <div>
+                        <input type="number" value="{{ wish.accumulated }}" class="wish-input"
+                            onchange="updateWish('{{ wish.name }}', 'accumulated', this.value)">
+                    </div>
+
+                    <div>
+                        <button class="delete-btn" onclick="deleteWish('{{ wish.name }}')">🗑️</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- balances -->
+        <div class="column">
+            <h2>Donation</h2>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; font-weight: bold;">
+                <div>Mosque</div>
+                <div>Madrasa</div>
+                <div>Sadqah</div>
+                <div>Empowerment</div>
+                <div>Others</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px;">
+                {% for key in ['mosque', 'madrasa', 'sadqah', 'empowerment', 'others'] %}
+                <input type="number" value="{{ balanceDonation.donations[key] }}" 
+                       onchange="updateBalanceDonation('donations', '{{ key }}', this.value)"
+                       style="width: 100px; padding: 4px; font-size: 14px;">
+                {% endfor %}
+            </div>
+
+            <h2>Balance Statements</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-weight: bold;">
+                <div>DBBL</div>
+                <div>Bkash</div>
+                <div>Nagad</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                {% for key in ['dbbl', 'bkash', 'nagad'] %}
+                <input type="number" value="{{ balanceDonation.balances[key] }}" 
+                       onchange="updateBalanceDonation('balances', '{{ key }}', this.value)"
+                       style="width: 100px; padding: 4px; font-size: 14px;">
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: 10px;">
+                <strong>Total Balance:</strong>
+                {{
+                    balanceDonation.balances.dbbl +
+                    balanceDonation.balances.bkash +
+                    balanceDonation.balances.nagad
+                }}
+            </div>
+        </div>
     </div>
 </body>
+
 <script>
     function updateDaily(field, value){
         fetch('/updateDaily', {
@@ -289,6 +323,16 @@
             if (data.success) {
                 location.reload();
             }
+        });
+    }
+
+    function updateBalanceDonation(fieldType, name, value) {
+        fetch('/update_balance_donation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ field_type: fieldType, name: name, value: value })
         });
     }
 </script>
