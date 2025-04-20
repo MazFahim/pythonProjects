@@ -13,7 +13,8 @@ def balance():
     dailyData = get_daily_balances()
     monthlyData = get_monthly_expense()
     wishlistData = get_wish_list()
-    return render_template('balance.html', dailyData=dailyData, monthlyData=monthlyData, wishlistData=wishlistData)
+    balanceDonation = get_balance_and_donation()
+    return render_template('balance.html', dailyData=dailyData, monthlyData=monthlyData, wishlistData=wishlistData, balanceDonation=balanceDonation)
 
 
 @app.route('/update_daily', methods=['POST'])
@@ -65,6 +66,13 @@ def delete_wish_route():
     delete_wish(name)
     wishlist = get_wish_list()
     return jsonify({"success": True, "wishes": wishlist["wishes"]})
+
+@app.route('/update_balance_donation', methods=['POST'])
+def update_balance_donation_route():
+    data = request.json
+    field_type, name, value = data["field_type"], data["name"], int(data["value"])
+    update_balance_donation(field_type, name, value)
+    return jsonify({"success": True})
 
 if __name__ == '__main__':
     app.run(debug=True)
