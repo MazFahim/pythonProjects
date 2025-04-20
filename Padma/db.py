@@ -116,3 +116,31 @@ def delete_wish(name):
         {"type": "wish_list"},
         {"$pull": {"wishes": {"name": name}}}
     )
+
+def get_balance_and_donation():
+    data = collection.find_one({"type": "balance_donation"}, {"_id": 0})
+    if not data:
+        data = {
+            "type": "balance_donation",
+            "donations": {
+                "mosque": 0,
+                "madrasa": 0,
+                "sadqah": 0,
+                "empowerment": 0,
+                "others": 0
+            },
+            "balances": {
+                "dbbl": 0,
+                "bkash": 0,
+                "nagad": 0
+            }
+        }
+        collection.insert_one(data)
+    return data
+
+def update_balance_donation(field_type, field_name, value):
+    collection.update_one(
+        {"type": "balance_donation"},
+        {"$set": {f"{field_type}.{field_name}": value}},
+        upsert=True
+    )
