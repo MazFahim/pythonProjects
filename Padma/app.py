@@ -3,11 +3,18 @@ from db import *
 
 app = Flask(__name__)
 
+#base page routs
 @app.route('/')
 def home():
     return render_template('home.html')
 
 
+@app.route('/portfolio')
+def portfolio():
+    portfolio_data = get_portfolio()
+    return render_template('portfolio.html', portfolio=portfolio_data)
+
+#Balance Routes
 @app.route('/balance')
 def balance():
     dailyData = get_daily_balances()
@@ -17,7 +24,7 @@ def balance():
     return render_template('balance.html', dailyData=dailyData, monthlyData=monthlyData, wishlistData=wishlistData, balanceDonation=balanceDonation)
 
 
-@app.route('/update_daily', methods=['POST'])
+@app.route('/updateDaily', methods=['POST'])
 def update_daily():
     data = request.json
     field, value = data["field"], int(data["value"])
@@ -50,6 +57,7 @@ def add_wish_route():
     wishlist = get_wish_list()
     return jsonify({"success": True, "wishes": wishlist["wishes"]})
 
+
 @app.route('/updateWish', methods=['POST'])
 def update_wish_route():
     data = request.json
@@ -57,6 +65,7 @@ def update_wish_route():
 
     update_wish(name, field, value)
     return jsonify({"success": True})
+
 
 @app.route('/deleteWish', methods=['POST'])   
 def delete_wish_route():
@@ -67,12 +76,43 @@ def delete_wish_route():
     wishlist = get_wish_list()
     return jsonify({"success": True, "wishes": wishlist["wishes"]})
 
+
 @app.route('/update_balance_donation', methods=['POST'])
 def update_balance_donation_route():
     data = request.json
     field_type, name, value = data["field_type"], data["name"], int(data["value"])
     update_balance_donation(field_type, name, value)
     return jsonify({"success": True})
+
+
+#portfolio related routes
+@app.route('/add_portfolio_item', methods=['POST'])
+def add_portfolio_item_route():
+    data = request.json
+    category = data["category"]
+    item = data["item"]
+    add_portfolio_item(category, item)
+    return jsonify(success=True)
+
+
+@app.route('/update_portfolio_item', methods=['POST'])
+def update_portfolio_item_route():
+    data = request.json
+    category = data["category"]
+    old_item = data["old_item"]
+    new_item = data["new_item"]
+    update_portfolio_item(category, old_item, new_item)
+    return jsonify(success=True)
+
+
+@app.route('/delete_portfolio_item', methods=['POST'])
+def delete_portfolio_item_route():
+    data = request.json
+    category = data["category"]
+    item = data["item"]
+    delete_portfolio_item(category, item)
+    return jsonify(success=True)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
