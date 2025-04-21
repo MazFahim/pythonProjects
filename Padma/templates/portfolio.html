@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <style>
+        body, nav {
+            margin: 0 ;
+            padding: 0;
+        }
+        .two-column-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 40px;
+            margin: 20px;
+        }
+        .info-box {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 300px;
+        }
+        .info-box h2 {
+            text-align: center;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .item input {
+            flex: 1;
+            margin-right: 10px;
+            padding: 5px;
+        }
+        .item button {
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .add-row {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .add-row input {
+            flex: 1;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .add-row button {
+            padding: 6px 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% include '_navbar.html' %}  
+
+    <div class="two-column-container">
+        <div class="info-box">
+            <h2>Freelancing</h2>
+
+            <div class="add-row">
+                <input type="text" id="freelancingInput" placeholder="New freelancing entry">
+                <button onclick="addItem('freelancing')">Add</button>
+            </div>
+
+            <div id="freelancingList">
+                {% for item in portfolio.freelancing %}
+                <div class="item">
+                    <input value="{{ item }}" onchange="updateItem('freelancing', '{{ item }}', this.value)">
+                    <button onclick="deleteItem('freelancing', '{{ item }}')">✖</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="info-box">
+            <h2>Trading</h2>
+
+            <div class="add-row">
+                <input type="text" id="tradingInput" placeholder="New trading entry">
+                <button onclick="addItem('trading')">Add</button>
+            </div>
+    
+            <div id="tradingList">
+                {% for item in portfolio.trading %}
+                <div class="item">
+                    <input value="{{ item }}" onchange="updateItem('trading', '{{ item }}', this.value)">
+                    <button onclick="deleteItem('trading', '{{ item }}')">✖</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+</body>
+<script>
+    function addItem(category) {
+        const input = document.getElementById(category + "Input");
+        const value = input.value.trim();
+        if (!value) return;
+
+        fetch("/add_portfolio_item", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ category, item: value })
+        }).then(() => location.reload());
+    }
+
+    function updateItem(category, old_item, new_item) {
+        fetch("/update_portfolio_item", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ category, old_item, new_item })
+        });
+    }
+
+    function deleteItem(category, item) {
+        fetch("/delete_portfolio_item", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ category, item })
+        }).then(() => location.reload());
+    }
+</script>
+</html>
