@@ -9,6 +9,9 @@
             margin: 0 ;
             padding: 0;
         }
+        body {
+            overflow-x: hidden;
+        }
         #parent{
             margin-left: 15px;
             margin-right: 15px;
@@ -18,6 +21,8 @@
             grid-template-rows: 1fr 1fr;
             width: 100%;
             gap: 20px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         .column{
             padding: 20px;
@@ -30,16 +35,33 @@
             text-align: center;
         }
         .wish-input {
-            width: 80%;
+            width: 70%;
             padding: 4px;
         }
+        .wish-row button {
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .wish-row button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
         select {
             width: 80%;
             padding: 4px;
             text-align: center;
         }
         .delete-btn {
-            background-color: #f44336;
+            /* background-color: #f44336; */
             color: white;
             border: none;
             border-radius: 5px;
@@ -50,13 +72,20 @@
         .delete-btn:hover {
             background-color: #d32f2f;
         }
+
+        .valueInput {
+            width: 100px;
+            padding: 3px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     {% include '_navbar.html' %}  
 
     <div>
-        <h1>Total Balance:</h1>
+        <h1>Balance Statements</h1>
     </div>
 
     <div id="parent">
@@ -71,12 +100,12 @@
                 <div>
                     <strong>Budget</strong>
                     <input type="number" name="dailyBudget" id="dailyBudget" value="{{ dailyData.budget }}"
-                    onchange="updateDaily('budget', this.value)">
+                    class="valueInput" onchange="updateDaily('budget', this.value)">
                 </div>
                 <div>
                     <strong>Expense</strong>
-                    <input type="number" name="dailyExpense" id="dailyExpense" value="{{ dailyData.expense }}"
-                    onchange="updateDaily('expense', this.value)">
+                    <input type="number" name="dailyExpense" id="dailyExpense" value="{{ dailyData.expenses }}"
+                    class="valueInput" onchange="updateDaily('expenses', this.value)">
                 </div>
                 <div>
                     <strong>Balance:</strong>
@@ -148,8 +177,9 @@
 
             <!-- adding new wish -->
             <div class="wish-row">
-                <input type="text" id="wishInput" placeholder="Let there be a new wish" style="flex: 1;width: 350px;padding: 5px;margin-bottom: 10px;">
-                <button style="background-color: #4caf50; padding: 5px; border-radius: 3px; width: 100px; border-color: rgb(44, 42, 40);" onclick="addWish()">Add</button>
+                <input type="text" id="wishInput" placeholder="Let there be a new wish" style="flex: 1;width: 350px;
+                padding: 5px;margin-bottom: 10px;border: 1px solid #ccc; border-radius: 4px;">
+                <button onclick="addWish()">Add</button>
             </div>
 
             <div id="wishlist" class="wish-row wish-label" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
@@ -173,12 +203,12 @@
                     </select>
                     
                     <div>
-                        <input type="number" value="{{ wish.price }}" class="wish-input"
+                        <input type="number" value="{{ wish.price }}" class="wish-input valueInput"
                             onchange="updateWish('{{ wish.name }}', 'price', this.value)">
                     </div>
                 
                     <div>
-                        <input type="number" value="{{ wish.accumulated }}" class="wish-input"
+                        <input type="number" value="{{ wish.accumulated }}" class="wish-input valueInput"
                             onchange="updateWish('{{ wish.name }}', 'accumulated', this.value)">
                     </div>
 
@@ -204,7 +234,7 @@
                 {% for key in ['mosque', 'madrasa', 'sadqah', 'empowerment', 'others'] %}
                 <input type="number" value="{{ balanceDonation.donations[key] }}" 
                        onchange="updateBalanceDonation('donations', '{{ key }}', this.value)"
-                       style="width: 100px; padding: 4px; font-size: 14px;">
+                       class="valueInput">
                 {% endfor %}
             </div>
 
@@ -218,7 +248,7 @@
                 {% for key in ['dbbl', 'bkash', 'nagad'] %}
                 <input type="number" value="{{ balanceDonation.balances[key] }}" 
                        onchange="updateBalanceDonation('balances', '{{ key }}', this.value)"
-                       style="width: 100px; padding: 4px; font-size: 14px;">
+                       class="valueInput">
                 {% endfor %}
             </div>
 
@@ -251,6 +281,7 @@
             if(data.success){
                 document.getElementById('dailyBalance').innerText = data.balance;
                 document.getElementById('dailySaved').innerText = data.saved;
+                document.getElementById('dailyExpense').innerText = data.expenses;
                 document.getElementById('dailyDate').innerText = data.date;
             }
         })
