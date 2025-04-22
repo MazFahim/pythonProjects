@@ -1,0 +1,61 @@
+<style>
+    body {
+      font-family: sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+  
+    form {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+  
+    input[type="password"] {
+      padding: 10px 14px;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+  
+    input[type="password"]:focus {
+      border-color: #870303;
+      outline: none;
+    }
+  
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #764de7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  
+    button:hover {
+      background-color: #a10505;
+    }
+  
+    p {
+      margin-top: 10px;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+  
+
+<form method="post">
+    <input type="password" name="password" placeholder="Enter password">
+    <button type="submit">Submit</button>
+    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
+</form>
