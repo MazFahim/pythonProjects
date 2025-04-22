@@ -1,11 +1,13 @@
 from pymongo import MongoClient
 from config import MONGO_URI
 from datetime import datetime
+from bson import ObjectId
 
 client = MongoClient(MONGO_URI)
 db = client["padma"]
 collection = db["balances"]
 portfolio_collection = db["portfolio"]
+todos_collection = db["todos"]
 
 
 #balance functions
@@ -178,3 +180,22 @@ def update_portfolio_item(category, old_item, new_item):
 
 def delete_portfolio_item(category, item):
     portfolio_collection.update_one({}, {"$pull": {category: item}})
+
+
+# Todo functions
+def get_all_todos():
+    todos = todos_collection.find({}, {"_id": 1, "text": 1})
+    return [{"_id": str(todo["_id"]), "text": todo["text"]} for todo in todos]
+
+
+def add_todo(text):
+    todo = {"text": text}
+    todos_collection.insert_one(todo)
+
+
+def update_todo(todo_id, text):
+    todos_collection.update_one({"_id": ObjectId(todo_id)}, {"$set": {"text": text}})
+
+
+def delete_todo(todo_id):
+    todos_collection.delete_one({"_id": ObjectId(todo_id)})
