@@ -39,19 +39,67 @@
       <div id="calender"></div>
     </div>
     <div class="column2">
-      <div ng-app="">
-        <p>Add New Task: <input type="text" id="taskInput" oninput="displayTask()"></p>
-        <h1 id="displayTask"></h1>
-      </div>
+      <h2>Todo List</h2>
+      <input type="text" id="newTodoInput" placeholder="Add new task" onkeypress="if(event.key === 'Enter') { addTodo() }">
+      <ul id="todolist" style="list-style: none; padding-left: 0;"></ul>
     </div>   
     
   </div>
 
 </body>
 <script>
-  function displayTask() {
-    const input = document.getElementById("taskInput").value;
-    document.getElementById("displayTask").innerText = input;
+  function loadTodos() {
+    fetch('/get_todos')
+      .then(response => response.json())
+      .then(data => {
+        const todoList = document.getElementById('todolist');
+        todoList.innerHTML = ''; // Clear existing list
+        data.todos.forEach(todo => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <input type="text" value="${todo.text}" onchange="updateTodo('${todo._id}', this.value)">
+            <button onclick="deleteTodo('${todo._id}')">🗑️</button>
+          `;
+          todoList.appendChild(li);
+        });
+      });
   }
+
+  function addTodo(){
+    const text = document.getElementById('newTodoInput').value;
+    if(!text) return; 
+    fetch('/add_todo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text })
+    }).then(() => {
+      document.getElementById('newTodoInput').value = ''; // Clear input field
+      loadTodos(); 
+    });
+  }
+
+  function updateTodo(id, text) {
+    fetch('/update_todo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: id, text: text })
+    }).then(() => loadTodos());
+  }
+
+  function deleteTodo(id) {
+    fetch('/delete_todo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: id })
+    }).then(() => loadTodos());
+  }
+
+  window.onload = loadTodos;
 </script>
 </html>
