@@ -1,11 +1,29 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for
 from db import *
+import os, secrets
 
 app = Flask(__name__)
+
+#authentication route
+# app.secret_key = '158-1997-pAdma'
+app.secret_key = secrets.token_hex(16)  # Generate a random secret key
+PASSWORD = 'cTg@Shiq0/'
+
+@app.route('/auth', methods=['GET', 'POST'])
+def auth():
+    if request.method == 'POST':
+        if request.form.get('password') == PASSWORD:
+            session['authenticated'] = True
+            return redirect(url_for('home'))  # or your home route
+        return render_template('auth.html', error='Wrong password')
+    return render_template('auth.html')
+
 
 #base page routs
 @app.route('/')
 def home():
+    if not session.get('authenticated'):
+        return redirect(url_for('auth'))
     return render_template('home.html')
 
 
@@ -112,6 +130,36 @@ def delete_portfolio_item_route():
     item = data["item"]
     delete_portfolio_item(category, item)
     return jsonify(success=True)
+
+
+#todo related routes
+@app.route('/get_todos')
+def get_todos():
+    todos = get_all_todos()
+    return jsonify({"todos": todos})
+
+
+@app.route('/add_todo', methods=['POST'])
+def add_todo_route():
+    data = request.get_json()
+    text = data.get("text")
+    if text:
+        add_todo(text)
+    return jsonify({"success": True})
+
+
+@app.route('/update_todo', methods=['POST'])
+def update_todo_route():
+    data = request.get_json()
+    update_todo(data["id"], data["text"])
+    return jsonify({"success": True})
+
+
+@app.route('/delete_todo', methods=['POST'])
+def delete_todo_route():
+    data = request.get_json()
+    delete_todo(data["id"])
+    return jsonify({"success": True})
 
 
 if __name__ == '__main__':
