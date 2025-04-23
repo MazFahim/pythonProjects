@@ -23,11 +23,21 @@ def get_daily_balances():
         data = {"date": today, "budget": 200, "expenses": 0, "balance": 200, "saved": saved}
         collection.update_one({}, {"$set": data})
 
+    data["balance"] = data["budget"] - data["expenses"]
+    collection.update_one({}, {"$set": {"balance": data["balance"]}})
+
     return data
 
 
 def update_daily_balance(field, value):
     collection.update_one({}, {"$set": {field: value}}, upsert=True)
+
+    updated = collection.find_one({})
+    budget = updated.get("budget", 200)
+    expenses = updated.get("expenses", 0)
+    balance = budget - expenses
+
+    collection.update_one({}, {"$set": {"balance": balance}})
 
 
 def get_monthly_expense():
