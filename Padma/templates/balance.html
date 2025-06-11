@@ -285,16 +285,16 @@
             <div class="hustle-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
                 <div class="hustle-item">
                     <span>Balance</span><br>
-                    <span id="hustleBalanceValue"></span>
+                    <span id="hustleBalanceValue">{{ balanceDonation.hustles.balance }}</span>
                     <button class="hustle-button" onclick="openAmountUpdateModal('balance')">+</button>
                 </div>
                 <div class="hustle-item">
                     <span>Capital</span><br>
-                    <span id="hustleCapitalValue"></span>
+                    <span id="hustleCapitalValue">{{ balanceDonation.hustles.capital }}</span>
                 </div>
                 <div class="hustle-item">
                     <span>Usable Amount</span><br>
-                    <span id="hustleUsableValue"></span>
+                    <span id="hustleUsableValue">{{ balanceDonation.hustles.usable }}</span>
                     <button class="hustle-button" onclick="openAmountUpdateModal('Usable')">+</button>
                 </div>
             </div>
@@ -491,10 +491,40 @@
 
     function openAmountUpdateModal(type) {
         currentField = type;
+        document.getElementById('amountInput').value = '';
         document.getElementById('amountUpdateModal').style.display = 'block';
     }
 
     function submitModal() {
+        const amount = parseFloat(document.getElementById('amountInput').value);
+        const hustleBalance = document.getElementById('hustleBalanceValue');
+        const hustleCapital = document.getElementById('hustleCapitalValue');
+        const hustleUsable = document.getElementById('hustleUsableValue');
+
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return;
+        }
+
+        if(currentField==='balance') {
+            const newBalance = parseInt(hustleBalance.innerText || 0) + amount;
+            const capital = Math.floor(newBalance * 0.7);
+            const usable = newBalance - capital;
+
+            hustleBalance.innerText = newBalance;
+            hustleCapital.innerText = capital;
+            hustleUsable.innerText = usable;
+
+            updateBalanceDonation('hustles', 'balance', newBalance);
+            updateBalanceDonation('hustles', 'capital', capital);
+            updateBalanceDonation('hustles', 'usable', usable);
+        } 
+        else if(currentField==='Usable') {
+            const newUsable = parseInt(hustleUsable.innerText || 0) - amount;
+            hustleUsable.innerText = newUsable;
+
+            updateBalanceDonation('hustles', 'usable', updated);
+        }
+
         closeModal();
     }
 
