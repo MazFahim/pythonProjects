@@ -313,6 +313,25 @@
                 {% endfor %}
             </div>
 
+            <h2>Saved</h2>
+            <div class="hustle-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                <div class="hustle-item">
+                    <span>Emergency</span><br>
+                    <span id="emergencyFundValue">{{ balanceDonation.saved.emergencyFund }}</span>
+                    <button class="hustle-button" onclick="openAmountUpdateModal('emergencyFund')">+</button>
+                </div>
+                <div class="hustle-item">
+                    <span>Savings</span><br>
+                    <span id="properSavingsValue">{{ balanceDonation.saved.properSavings }}</span>
+                    <button class="hustle-button" onclick="openAmountUpdateModal('properSavings')">+</button>
+                </div>
+                <div class="hustle-item">
+                    <span>Leftovers</span><br>
+                    <span id="unusedValue">{{ balanceDonation.saved.unused }}</span>
+                    <button class="hustle-button" onclick="openAmountUpdateModal('unused')">+</button>
+                </div>
+            </div>
+
             <div style="margin-top: 10px;">
                 <strong>Total Balance:</strong>
                 {{
@@ -523,6 +542,27 @@
             hustleUsable.innerText = newUsable;
 
             updateBalanceDonation('hustles', 'usable', updated);
+        }
+        else if(currentField==='emergencyFund'){
+            const emergencyFund = document.getElementById('emergencyFundValue');
+            const newEmergencyFund = parseInt(emergencyFund.innerText || 0) + amount;
+            emergencyFund.innerText = newEmergencyFund;
+
+            updateBalanceDonation('saved', 'emergencyFund', newEmergencyFund);
+        }
+        else if(currentField==='properSavings'){
+            const properSavings = document.getElementById('properSavingsValue');
+            const newProperSavings = parseInt(properSavings.innerText || 0) + amount;
+            properSavings.innerText = newProperSavings;
+
+            updateBalanceDonation('saved', 'properSavings', newProperSavings);
+        }
+        else if(currentField==='unused'){
+            const unused = document.getElementById('unusedValue');
+            const newUnused = parseInt(unused.innerText || 0) + amount;
+            unused.innerText = newUnused;
+
+            updateBalanceDonation('saved', 'unused', newUnused);
         }
 
         closeModal();
