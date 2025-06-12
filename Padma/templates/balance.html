@@ -332,13 +332,47 @@
                 </div>
             </div>
 
-            <div style="margin-top: 10px;">
-                <strong>Total Balance:</strong>
-                {{
-                    balanceDonation.balances.dbbl +
-                    balanceDonation.balances.bkash +
-                    balanceDonation.balances.nagad
-                }}
+            <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div>
+                    <strong>Total Balance:</strong>
+                    {{
+                        balanceDonation.balances.dbbl +
+                        balanceDonation.balances.bkash +
+                        balanceDonation.balances.nagad
+                    }}
+                </div>
+                <div>
+                    <strong>Reserved amount:</strong>
+                    {{
+                        balanceDonation.hustles.capital +
+                        balanceDonation.donations.mosque+
+                        balanceDonation.donations.madrasa+
+                        balanceDonation.donations.sadqah+
+                        balanceDonation.donations.empowerment+
+                        balanceDonation.donations.others+
+                        balanceDonation.saved.emergencyFund+
+                        balanceDonation.saved.properSavings+
+                        balanceDonation.saved.unused
+                    }}
+                </div>
+                <div>
+                    <strong>Total Usable Balance:</strong>
+                    {{
+                        (balanceDonation.balances.dbbl +
+                        balanceDonation.balances.bkash +
+                        balanceDonation.balances.nagad)
+                        -
+                        (balanceDonation.hustles.capital +
+                        balanceDonation.donations.mosque +
+                        balanceDonation.donations.madrasa +
+                        balanceDonation.donations.sadqah +
+                        balanceDonation.donations.empowerment +
+                        balanceDonation.donations.others +
+                        balanceDonation.saved.emergencyFund +
+                        balanceDonation.saved.properSavings +
+                        balanceDonation.saved.unused)
+                    }}
+                </div>                
             </div>
         </div>
 
