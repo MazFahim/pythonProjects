@@ -1,20 +1,30 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, url_for
 from db import *
+from functools import wraps
 import os, secrets
 
 app = Flask(__name__)
+app.config['SESSION_PERMANENT'] = False
 
 #authentication route
 # app.secret_key = '158-1997-pAdma'
 app.secret_key = secrets.token_hex(16)  # Generate a random secret key
-PASSWORD = 'cTg@Shiq0/'
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('authenticated'):
+            return redirect(url_for('auth'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
     if request.method == 'POST':
         if request.form.get('password') == PASSWORD:
             session['authenticated'] = True
-            return redirect(url_for('home'))  # or your home route
+            return redirect(url_for('home'))  
         return render_template('auth.html', error='Wrong password')
     return render_template('auth.html')
 
@@ -28,12 +38,14 @@ def home():
 
 
 @app.route('/portfolio')
+@login_required
 def portfolio():
     portfolio_data = get_portfolio()
     return render_template('portfolio.html', portfolio=portfolio_data)
 
 #Balance Routes
 @app.route('/balance')
+@login_required
 def balance():
     dailyData = get_daily_balances()
     monthlyData = get_monthly_expense()
