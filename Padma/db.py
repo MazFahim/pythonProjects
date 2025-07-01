@@ -8,6 +8,7 @@ db = client["padma"]
 collection = db["balances"]
 portfolio_collection = db["portfolio"]
 todos_collection = db["todos"]
+PASSWORD = 'cTg@Shiq0/'
 
 
 #balance functions
@@ -119,17 +120,20 @@ def get_wish_list():
 
     return wish_data
 
+
 def update_wish(name, field, value):
     collection.update_one(
         {"type": "wish_list", "wishes.name": name},
         {"$set": {f"wishes.$.{field}": value}}
     )
 
+
 def delete_wish(name):
     collection.update_one(
         {"type": "wish_list"},
         {"$pull": {"wishes": {"name": name}}}
     )
+
 
 def get_balance_and_donation():
     data = collection.find_one({"type": "balance_donation"}, {"_id": 0})
@@ -143,6 +147,10 @@ def get_balance_and_donation():
                 "empowerment": 0,
                 "others": 0
             },
+            "hustles": {
+                "balance": 0,
+                "usable": 0
+            },
             "balances": {
                 "dbbl": 0,
                 "bkash": 0,
@@ -151,6 +159,7 @@ def get_balance_and_donation():
         }
         collection.insert_one(data)
     return data
+
 
 def update_balance_donation(field_type, field_name, value):
     collection.update_one(
