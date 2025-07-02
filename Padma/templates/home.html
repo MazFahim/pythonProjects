@@ -63,6 +63,7 @@
         todoList.innerHTML = ''; // Clear existing list
         data.todos.forEach(todo => {
           const li = document.createElement('li');
+          li.setAttribute('data-id', todo._id); 
           li.innerHTML = `
             <input type="text" value="${todo.text}" onchange="updateTodo('${todo._id}', this.value)">
             <button onclick="deleteTodo('${todo._id}')">🗑️</button>
