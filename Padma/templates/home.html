@@ -3,6 +3,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <title>Home</title>
 <style>
@@ -29,6 +30,12 @@
   #content input[type="text"]:focus {
     border-color: #870303;
     outline: none;
+  }
+  @media (max-width: 768px) {
+    #content {
+      grid-template-columns: 1fr;
+      margin-top: 20px;
+    }
   }
 </style>
 <body>
@@ -99,6 +106,17 @@
       body: JSON.stringify({ id: id })
     }).then(() => loadTodos());
   }
+
+  var sortable = new Sortable(document.getElementById('todolist'), {
+    onEnd: function () {
+      const orderedIds = Array.from(document.querySelectorAll('#todolist li')).map(li => li.dataset.id);
+      fetch('/reorder_todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ordered_ids: orderedIds })
+      });
+    }
+  });
 
   window.onload = loadTodos;
 </script>
