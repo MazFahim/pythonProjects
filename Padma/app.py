@@ -173,6 +173,13 @@ def delete_todo_route():
     delete_todo(data["id"])
     return jsonify({"success": True})
 
+@app.route('/reorder_todos', methods=['POST'])
+def reorder_todos_route():
+    data = request.get_json()
+    ids_in_order = data["ordered_ids"]  
+    reorder_todos(ids_in_order)         
+    return jsonify({"success": True})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
