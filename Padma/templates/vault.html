@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Room</title>
+    <style>
+        body, nav {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        input[type="text"] {
+            width: 70%;
+            max-width: 400px;
+            padding: 9px 12px;
+            margin: 8px 3px;
+            box-sizing: border-box;
+            border: 2px solid #4CAF50;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #870303;
+            box-shadow: 0 0 8px rgba(135, 3, 3, 0.3);
+            outline: none;
+        }
+        .question-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            flex-direction: column;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% include '_navbar.html' %}  
+
+    <div class="question-container">
+        <div id="first_question">
+            <h2>What is the favourite football club?</h2>
+            <input type="text" id="football_club" placeholder="Enter the favourite football club">
+        </div>
+
+        <div id="second_question" style="display: none;">
+            <h2>What is the favourite anime?</h2>
+            <input type="text" id="anime_name" placeholder="Enter the favourite anime">
+        </div>
+
+        <div id="third_question" style="display: none;">
+            <h2>What is the favourite song?</h2>
+            <input type="text" id="song_name" placeholder="Enter the favourite song">
+        </div>
+    </div>
+
+    <div id="vault_container" style="display: none; text-align: center; margin-top: 30px;">
+        <div>
+            <h2>Address</h2>
+            <input type="text" name="platform" id="vault_field1" placeholder="Enter field 1">
+        </div>
+        <div>
+            <h2>Street</h2>
+            <input type="text" name="username" id="vault_field2" placeholder="Enter field 2">
+        </div>
+        <div>
+            <h2>House</h2>
+            <input type="text" name="password" id="vault_field3" placeholder="Enter field 3">
+        </div>
+    </div>
+
+    <div id="no_match_message" style="display: none; font-weight: bold; margin: 5px;">
+        Japan is an island country located in East Asia, consisting of a string of islands in the western North Pacific 
+        Ocean. It is known for its unique culture, advanced technology, and natural beauty. The country is composed of four
+        main islands—Hokkaido, Honshu, Shikoku, and Kyushu—along with thousands of smaller islands.
+    </div>
+</body>
+<script>
+    const footballClub = document.getElementById('football_club').value.trim();
+    const animeName = document.getElementById('anime_name').value.trim();
+    const songName = document.getElementById('song_name').value.trim();
+
+    window.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('football_club').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter' && this.value.trim() !== '') {
+            document.getElementById('first_question').style.display = 'none';
+            document.getElementById('second_question').style.display = 'block';
+            }
+        });
+
+        document.getElementById('anime_name').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter' && this.value.trim() !== '') {
+            document.getElementById('second_question').style.display = 'none';
+            document.getElementById('third_question').style.display = 'block';
+            }
+        });
+
+        document.getElementById('song_name').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter' && this.value.trim() !== '') {
+                const footballClub = document.getElementById('football_club').value.trim();
+                const animeName = document.getElementById('anime_name').value.trim();
+                const songName = document.getElementById('song_name').value.trim();
+                
+                document.getElementById('third_question').style.display = 'none';
+
+                if (footballClub === 'Isekai' && songName === 'Mane') {
+                    document.getElementById('vault_container').style.display = 'block';
+
+                    // Add this after displaying vault_container
+                    document.getElementById('vault_field3').addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter' && this.value.trim() !== '') {
+                        const platform = document.getElementById('vault_field1').value.trim();
+                        const username = document.getElementById('vault_field2').value.trim();
+                        const password = document.getElementById('vault_field3').value.trim();
+                        
+                        fetch('/save_vault', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ platform, username, password })
+                        }).then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    });
+
+                }
+                else {
+                    document.getElementById('no_match_message').style.display = 'block';
+                }
+            }
+        });
+    });
+
+
+</script>
+</html>
