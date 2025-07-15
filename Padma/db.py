@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from config import MONGO_URI
 from datetime import datetime
 from bson import ObjectId
+from cryptography.fernet import Fernet
 
 client = MongoClient(MONGO_URI)
 db = client["padma"]
@@ -208,6 +209,8 @@ def get_all_todos():
 
 
 def add_todo(text):
+    #todo = {"text": text}
+    #todos_collection.insert_one(todo)
     max_order_todo = todos_collection.find_one(sort=[("order", -1)])
     next_order = (max_order_todo["order"] + 1) if max_order_todo and "order" in max_order_todo else 0
     todo = {"text": text, "order": next_order}
@@ -227,4 +230,26 @@ def reorder_todos(ids_in_order):
         todos_collection.update_one(
             {"_id": ObjectId(todo_id)},
             {"$set": {"order": index}}
+        )
+
+
+#Vault functions
+def save_vault(platform, username, password):
+    vault_data = collection.find_one({"type": "vault"})
+    new_insert = {
+        "platform": platform,
+        "username": username,
+        "password": password,	
+    }
+
+    if not vault_data:
+        data = {
+            "type": "vault",
+            "credentials": [new_insert]
+        }
+        collection.insert_one(data)
+    else:
+        collection.update_one(
+            {"type": "vault"},
+            {"$push": {"credentials": new_insert}}
         )
