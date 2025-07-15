@@ -173,11 +173,29 @@ def delete_todo_route():
     delete_todo(data["id"])
     return jsonify({"success": True})
 
+
 @app.route('/reorder_todos', methods=['POST'])
 def reorder_todos_route():
     data = request.get_json()
     ids_in_order = data["ordered_ids"]  
     reorder_todos(ids_in_order)         
+    return jsonify({"success": True})
+
+
+@app.route('/vault')
+@login_required
+def vault():
+    return render_template('vault.html')
+
+
+@app.route('/save_vault', methods=['POST'])
+def save_vault_route():
+    data = request.get_json()
+    platform = data.get('platform')
+    username = data.get('username')
+    password = data.get('password')
+    
+    save_vault(platform, username, password)  # to be handled in db.py
     return jsonify({"success": True})
 
 
