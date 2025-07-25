@@ -77,6 +77,11 @@
         Ocean. It is known for its unique culture, advanced technology, and natural beauty. The country is composed of four
         main islands—Hokkaido, Honshu, Shikoku, and Kyushu—along with thousands of smaller islands.
     </div>
+
+    <div id="query_result" style="display: none; margin: 5px; margin-left: 30px;">
+        <h2>Query Result</h2>
+        <p id="result_text"></p>
+    </div>
 </body>
 <script>
     const footballClub = document.getElementById('football_club').value.trim();
@@ -129,6 +134,25 @@
                         }
                     });
 
+                }
+                else if(footballClub === 'alqassam' && songName === 'Khabib'){
+                    fetch('/get_vault', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ platform: animeName })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultDiv = document.getElementById('query_result');
+                        const resultText = document.getElementById('result_text');
+                        if (data.credentials.length > 0) {
+                            const cred = data.credentials[0];
+                            resultText.textContent = `Platform: ${cred.platform}, Username: ${cred.username}, Password: ${cred.password}`;
+                            resultDiv.style.display = 'block';
+                        } else {
+                            document.getElementById('no_match_message').style.display = 'block';
+                        }
+                    });
                 }
                 else {
                     document.getElementById('no_match_message').style.display = 'block';
