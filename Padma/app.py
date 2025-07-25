@@ -195,9 +195,16 @@ def save_vault_route():
     username = data.get('username')
     password = data.get('password')
     
-    save_vault(platform, username, password)  # to be handled in db.py
+    save_vault(platform, username, password)  
     return jsonify({"success": True})
 
+
+@app.route('/get_vault', methods=['POST'])
+def get_vault_route():
+    data = request.get_json()
+    platform = data.get('platform')
+    credentials = get_platform_info(platform) 
+    return jsonify({"credentials": credentials})
 
 if __name__ == '__main__':
     app.run(debug=True)
