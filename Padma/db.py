@@ -253,3 +253,11 @@ def save_vault(platform, username, password):
             {"type": "vault"},
             {"$push": {"credentials": new_insert}}
         )
+
+
+def get_platform_info(platform):
+    vault_data = collection.find_one({"type": "vault"}, {"_id": 0, "credentials": 1})
+    if not vault_data or "credentials" not in vault_data:
+        return []
+
+    return [cred for cred in vault_data["credentials"] if cred["platform"] == platform]
