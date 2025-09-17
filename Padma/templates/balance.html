@@ -48,7 +48,27 @@
             font-weight: bold;
             transition: background-color 0.2s ease, transform 0.1s ease;
         }
+        .wishlist-container{
+            margin-left: 15px;
+            margin-right: 15px;
+            padding-right: 15px;
+            width: 100%;
+        }
 
+        .wishlist-container select {
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 12px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .wishlist-container select:focus {
+            border-color: #4caf50;
+            outline: none;
+        }
         .wish-row button:hover {
             background-color: #45a049;
             transform: scale(1.05);
@@ -93,12 +113,6 @@
             padding-right: 15px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-        }
-        .wishlist-container{
-            margin-left: 15px;
-            margin-right: 15px;
-            padding-right: 15px;
-            width: 100%;
         }
         .hustle-grid {
             display: grid;
@@ -157,9 +171,9 @@
             border: 2px solid #4CAF50;
             border-radius: 4px;
             box-sizing: border-box;
-            }
+        }
 
-            .modal-content button {
+        .modal-content button {
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
@@ -167,11 +181,11 @@
             font-size: 16px;
             border-radius: 4px;
             cursor: pointer;
-            }
+        }
 
-            .modal-content button:hover {
-            background-color: #45a049;
-            }
+        .modal-content button:hover {
+         background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -387,7 +401,7 @@
                 <button onclick="addWish()">Add</button>
             </div>
 
-            <div id="wishlist" class="wish-row wish-label" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+            <div id="wishlist" class="wish-row wish-label" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 3px;">
                 <div><strong>Wish Name</strong></div>
                 <div><strong>Priority</strong></div>
                 <div><strong>Price Tag</strong></div>
