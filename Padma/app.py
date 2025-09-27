@@ -64,6 +64,10 @@ def update_daily():
     return jsonify({"success": True, "balance": updated_data["balance"],
                     "saved": updated_data["saved"], "date": updated_data["date"]})
 
+@app.route('/resetDaily', methods=['POST'])
+def reset_daily_route():
+    reset_daily_and_distribute() 
+    return jsonify({"success": True})
 
 @app.route('/updateMonthlyExpense', methods=['POST'])
 def update_monthly_expense_route():
