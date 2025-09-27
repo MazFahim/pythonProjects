@@ -107,6 +107,16 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
         }
+        #resetDailyBtn{
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
         #headerContent {
             margin-left: 15px;
             margin-right: 15px;
@@ -221,6 +231,7 @@
                 <strong>Saved:</strong>
                 <span id="dailySaved">{{ dailyData.saved }}</span>
             </div>
+            <button id="resetDailyBtn" onclick="resetDaily()">Reset</button>
         </div>
     </div>
 
@@ -474,6 +485,16 @@
                 document.getElementById('dailyDate').innerText = data.date;
             }
         })
+    }
+
+    function resetDaily() {
+        fetch("/resetDaily", { method: "POST" })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
     }
 
     function updateMonthlyExpense(name, field, value){
