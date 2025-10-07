@@ -169,6 +169,29 @@ def update_balance_donation(field_type, field_name, value):
         upsert=True
     )
 
+def reset_daily_and_distribute():
+    daily = collection.find_one({}, {"_id": 0})
+    balance_doc = collection.find_one({"type": "balance_donation"})
+
+    if not daily or not balance_doc:
+        return
+
+    saved_amount = daily.get("saved", 0)
+    if saved_amount > 0:
+        portion = saved_amount // 3
+        remainder = saved_amount % 3  
+
+        collection.update_one(
+            {"type": "balance_donation"},
+            {"$inc": {
+                "saved.emergencyFund": portion,
+                "saved.properSavings": portion,
+                "saved.unused": portion + remainder
+            }}
+        )
+
+    # reset daily saved to 0
+    collection.update_one({}, {"$set": {"saved": 0}})
 
 # Portfolio functions
 def get_portfolio():
@@ -200,37 +223,6 @@ def update_portfolio_item(category, old_item, new_item):
 
 def delete_portfolio_item(category, item):
     portfolio_collection.update_one({}, {"$pull": {category: item}})
-
-
-# Todo functions
-def get_all_todos():
-    todos = todos_collection.find({}, {"_id": 1, "text": 1, "order": 1}).sort("order", 1)
-    return [{"_id": str(todo["_id"]), "text": todo["text"], "order": todo.get("order", 0)} for todo in todos]
-
-
-def add_todo(text):
-    #todo = {"text": text}
-    #todos_collection.insert_one(todo)
-    max_order_todo = todos_collection.find_one(sort=[("order", -1)])
-    next_order = (max_order_todo["order"] + 1) if max_order_todo and "order" in max_order_todo else 0
-    todo = {"text": text, "order": next_order}
-    todos_collection.insert_one(todo)
-
-
-def update_todo(todo_id, text):
-    todos_collection.update_one({"_id": ObjectId(todo_id)}, {"$set": {"text": text}})
-
-
-def delete_todo(todo_id):
-    todos_collection.delete_one({"_id": ObjectId(todo_id)})
-
-
-def reorder_todos(ids_in_order):
-    for index, todo_id in enumerate(ids_in_order):
-        todos_collection.update_one(
-            {"_id": ObjectId(todo_id)},
-            {"$set": {"order": index}}
-        )
 
 
 #Vault functions
