@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, session, u
 from db import *
 from functools import wraps
 import os, secrets
+from features.todos.routes import todo_bp
 
 app = Flask(__name__)
 app.config['SESSION_PERMANENT'] = False
@@ -9,6 +10,8 @@ app.config['SESSION_PERMANENT'] = False
 #authentication route
 # app.secret_key = '158-1997-pAdma'
 app.secret_key = secrets.token_hex(16)  # Generate a random secret key
+
+app.register_blueprint(todo_bp)
 
 
 def login_required(f):
@@ -146,44 +149,6 @@ def delete_portfolio_item_route():
     item = data["item"]
     delete_portfolio_item(category, item)
     return jsonify(success=True)
-
-
-#todo related routes
-@app.route('/get_todos')
-def get_todos():
-    todos = get_all_todos()
-    return jsonify({"todos": todos})
-
-
-@app.route('/add_todo', methods=['POST'])
-def add_todo_route():
-    data = request.get_json()
-    text = data.get("text")
-    if text:
-        add_todo(text)
-    return jsonify({"success": True})
-
-
-@app.route('/update_todo', methods=['POST'])
-def update_todo_route():
-    data = request.get_json()
-    update_todo(data["id"], data["text"])
-    return jsonify({"success": True})
-
-
-@app.route('/delete_todo', methods=['POST'])
-def delete_todo_route():
-    data = request.get_json()
-    delete_todo(data["id"])
-    return jsonify({"success": True})
-
-
-@app.route('/reorder_todos', methods=['POST'])
-def reorder_todos_route():
-    data = request.get_json()
-    ids_in_order = data["ordered_ids"]  
-    reorder_todos(ids_in_order)         
-    return jsonify({"success": True})
 
 
 @app.route('/vault')
